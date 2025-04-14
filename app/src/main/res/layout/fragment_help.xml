@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/helpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is the help page. If you need assistance, click the links below:"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/linkReal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:text="https://developer.android.com/guide"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/linkRickroll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:text="https://youtu.be/dQw4w9WgXcQ"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="14sp" />
+    </LinearLayout>
+</ScrollView>

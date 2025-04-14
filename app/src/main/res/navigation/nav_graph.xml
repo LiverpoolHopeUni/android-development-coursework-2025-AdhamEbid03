@@ -25,4 +25,11 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/HelpFragment"
+        android:name="uk.ac.hope.mcse.android.coursework.HelpFragment"
+        android:label="Help"
+        tools:layout="@layout/fragment_help"/>
+
 </navigation>
