@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +15,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.fragment.app.Fragment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import uk.ac.hope.mcse.android.coursework.adapter.ExpenseAdapter;
 import uk.ac.hope.mcse.android.coursework.databinding.FragmentFirstBinding;
@@ -57,6 +64,16 @@ public class FirstFragment extends Fragment {
         builder.show();
     }
 
+    private void updateTotalSpent(List<Expense> expenses){
+        double total = 0;
+        for(Expense e: expenses){
+            total += e.getAmount();
+        }
+
+        String formatted = String.format("Total Spent: £%.2f", total);
+        binding.textViewTotal.setText(formatted);
+    }
+
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
@@ -72,6 +89,7 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         expenseAdapter = new ExpenseAdapter();
+        LinearLayout categorySummaryContainer = view.findViewById(R.id.categorySummaryContainer);
 
         RecyclerView recyclerView = binding.recyclerViewExpenses;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -81,6 +99,33 @@ public class FirstFragment extends Fragment {
         expenseViewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
         expenseViewModel.getAllExpenses().observe(getViewLifecycleOwner(), expenses -> {
             expenseAdapter.setExpenses(expenses);
+            updateTotalSpent(expenses);
+
+            categorySummaryContainer.removeAllViews();
+
+            Map<String,Double> categoryTotals = new HashMap<>();
+            for(Expense expense: expenses){
+                String category = expense.getCategory();
+                double amount = expense.getAmount();
+                categoryTotals.put(category, categoryTotals.getOrDefault(category, 0.0)+ amount);
+            }
+
+            for(Map.Entry<String, Double> entry: categoryTotals.entrySet()){
+                View cardView = LayoutInflater.from(getContext())
+                        .inflate(R.layout.item_category_summary,categorySummaryContainer, false);
+
+                TextView categoryName = cardView.findViewById(R.id.textViewCategoryName);
+                TextView categoryAmount = cardView.findViewById(R.id.textViewCategoryAmount);
+
+                categoryName.setText(entry.getKey());
+                categoryAmount.setText(String.format(Locale.UK, "£%.2f", entry.getValue()));
+
+                categorySummaryContainer.addView(cardView);
+            }
+        });
+
+        expenseAdapter.setOnItemClickListener(expense -> {
+            expenseViewModel.delete(expense);
         });
 
         binding.buttonHelp.setOnClickListener(v -> {

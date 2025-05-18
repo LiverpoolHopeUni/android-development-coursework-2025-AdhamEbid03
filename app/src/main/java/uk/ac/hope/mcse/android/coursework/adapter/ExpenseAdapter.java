@@ -24,6 +24,15 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
                 .inflate(R.layout.item_expense, parent, false);
         return new ExpenseViewHolder(itemView);
     }
+    public interface OnItemClickListener{
+        void onDeleteClick(Expense expense);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position){
@@ -32,6 +41,11 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         holder.textViewAmount.setText("£" + String.format("%.2f", current.getAmount()));
         holder.textViewDescription.setText(current.getDescription());
         holder.textViewDate.setText(current.getDate());
+        holder.buttonDelete.setOnClickListener(v -> {
+            if(listener != null){
+                listener.onDeleteClick(current);
+            }
+        });
     }
 
     @Override
@@ -45,6 +59,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     }
 
     public static class ExpenseViewHolder extends RecyclerView.ViewHolder{
+        public View buttonDelete;
         TextView textViewCategory, textViewAmount, textViewDescription, textViewDate;
 
         public ExpenseViewHolder(@NonNull View itemView){
@@ -53,6 +68,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             textViewDate = itemView.findViewById(R.id.textViewDate);
+            buttonDelete = itemView.findViewById(R.id.buttonDelete);
         }
     }
 }
